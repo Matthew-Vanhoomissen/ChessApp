@@ -458,12 +458,19 @@ public class Game extends JPanel{
 		});
 	}
 	
-	public boolean castle(Piece king, int x, int y) {
+	public boolean castle(Piece king, ArrayList<Piece> team, int x, int y) {
+		ArrayList<Piece> tempTeam = new ArrayList<>();
+		for(Piece p : team) {
+			if(p.getType().equals("rook")) {
+				tempTeam.add(p);
+			}
+		}
 		if(inCheck(king.getColor())) {
 			return false;
 		}
 		
 		if(king.getColor().equalsIgnoreCase("white")) {
+			
 			if(x - king.getX() > 0) {
 				
 			}
