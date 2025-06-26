@@ -28,6 +28,7 @@ public class Game extends JPanel{
 	boolean blackCheck = false;
 	boolean enPassW = true;
 	boolean enPassB = true;
+	boolean testing = true;
 	
 	
 	
@@ -57,6 +58,7 @@ public class Game extends JPanel{
                 	if(p.getSelected()) {
                 	
                 		enPassW = true;
+                		testing = false;
                 		if(validMove(p, (int)(Math.floor(mouseX/64) * 64), (int)(Math.floor(mouseY/64) * 64))) {
                 			enPassW = false;
                 			if(pieceThere(bMouseX, bMouseY) != null && !(pieceThere(bMouseX, bMouseY).equalsIgnoreCase(p.getColor()))) {
@@ -191,7 +193,7 @@ public class Game extends JPanel{
                 for(Piece p : blackTeam) {
                 	if(p.getSelected()) {
                 		enPassB = true;
-                		
+                		testing = false;
                 		if(validMove(p, (int)(Math.floor(mouseX/64) * 64), (int)(Math.floor(mouseY/64) * 64))) {
                 			enPassB = false;
                 			if(pieceThere(bMouseX, bMouseY) != null && !(pieceThere(bMouseX, bMouseY).equalsIgnoreCase(p.getColor()))) {
@@ -334,6 +336,7 @@ public class Game extends JPanel{
             						System.out.println(p.getColor()); 
             						}
                 				enPassW = true;
+                				testing = true;
                 				if(validMove(p, a*64, b*64)) {
                 					enPassW = false;
                 					int tempX2 = p.getX();
@@ -388,6 +391,7 @@ public class Game extends JPanel{
                 				String tempo = "";
                 				boolean bMoved = false;
                 				enPassB = true;
+                				testing = true;
                 				if(validMove(p, a*64, b*64)) {
                 					enPassB = false;
                 					int tempX2 = p.getX();
@@ -465,17 +469,58 @@ public class Game extends JPanel{
 				tempTeam.add(p);
 			}
 		}
-		if(inCheck(king.getColor())) {
+		if(king.getColor().equals("white") && whiteCheck == true) {
+			return false;
+		}
+		if(king.getColor().equals("black") && blackCheck == true) {
 			return false;
 		}
 		
-		if(king.getColor().equalsIgnoreCase("white")) {
+		
+		
 			
 			if(x - king.getX() > 0) {
 				
+				for(Piece pi : tempTeam) {
+					
+					if((pi.getX() > king.getX())) {
+						for(int i = king.getX()/64 + 1; i < pi.getX()/64; i++) {
+							if(pieceThere(i*64, king.getY()) != null) {
+								return false;
+							}
+						}
+						if(pi.getMoved() == false && king.getMoved() == false) {
+							if(!testing) {
+							pi.setX(4*64);
+							repaint();
+							}
+						return true;
+						}
+					}
+				}
 			}
-		}
-		return true;
+			if(x - king.getX() < 0) {
+				
+				for(Piece pi : tempTeam) {
+					
+					if((pi.getX() < king.getX())) {
+						for(int i = king.getX()/64 - 1; i > pi.getX()/64; i--) {
+							if(pieceThere(i*64, king.getY()) != null) {
+								return false;
+							}
+						}
+						if(pi.getMoved() == false && king.getMoved() == false) {
+							if(!testing) {
+							pi.setX(2*64);
+							repaint();
+							}
+						return true;
+						}
+					}
+				}
+			}
+		
+		return false;
 	}
 	public void teamSquares() {
 		
@@ -486,6 +531,7 @@ public class Game extends JPanel{
 				
 				for(int a = 0; a < 8; a++) {
 					for(int b = 0; b < 8; b++) {
+						testing = true;
 						if(validMove(p, a*64, b*64)) {
 							whiteSquares.add(String.valueOf(a) + " " + String.valueOf(b));
 						}
@@ -501,6 +547,7 @@ public class Game extends JPanel{
 				
 				for(int a = 0; a < 8; a++) {
 					for(int b = 0; b < 8; b++) {
+						testing = true;
 						if(validMove(p, a*64, b*64)) {
 							blackSquares.add(String.valueOf(a) + " " + String.valueOf(b));
 						}
@@ -705,6 +752,12 @@ public class Game extends JPanel{
 		else if(type.equalsIgnoreCase("king")) {
 			if(testingX - gridX <= 1 && testingX - gridX >= -1 && testingY - gridY >= -1 && testingY - gridY <= 1 && (testingX != gridX || gridY != testingY)) {
 				return true;
+			}
+			if(testingY == gridY && testingX == 1) {
+				System.out.println("now");
+			}
+			if(testingY == gridY && (testingX - gridX == 2 || testingX - gridX == -2) && piece.getColor().equals("white")) {
+				return castle(piece, whiteTeam, testingX*64, testingY*64);
 			}
 		}
 		else if(type.equalsIgnoreCase("knight")) {
