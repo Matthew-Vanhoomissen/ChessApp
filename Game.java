@@ -464,6 +464,7 @@ public class Game extends JPanel{
 	
 	public boolean castle(Piece king, ArrayList<Piece> team, int x, int y) {
 		ArrayList<Piece> tempTeam = new ArrayList<>();
+		ArrayList<String> tempSquares = new ArrayList<>();
 		for(Piece p : team) {
 			if(p.getType().equals("rook")) {
 				tempTeam.add(p);
@@ -475,6 +476,12 @@ public class Game extends JPanel{
 		if(king.getColor().equals("black") && blackCheck == true) {
 			return false;
 		}
+		if(king.getColor().equals("white")) {
+			tempSquares = blackSquares;
+		}
+		else {
+			tempSquares = whiteSquares;
+		}
 		
 		
 		
@@ -485,6 +492,12 @@ public class Game extends JPanel{
 					
 					if((pi.getX() > king.getX())) {
 						for(int i = king.getX()/64 + 1; i < pi.getX()/64; i++) {
+							for(String s : tempSquares) {
+								
+								if(s.charAt(0) - '0' == i) {
+									return false;
+								}
+							}
 							if(pieceThere(i*64, king.getY()) != null) {
 								return false;
 							}
@@ -756,8 +769,11 @@ public class Game extends JPanel{
 			if(testingY == gridY && testingX == 1) {
 				System.out.println("now");
 			}
-			if(testingY == gridY && (testingX - gridX == 2 || testingX - gridX == -2) && piece.getColor().equals("white")) {
+			if(color2.equals("white") && testingY == gridY && (testingX - gridX == 2 || testingX - gridX == -2)) {
 				return castle(piece, whiteTeam, testingX*64, testingY*64);
+			}
+			else if(color2.equals("black") && testingY == gridY && (testingX - gridX == 2 || testingX - gridX == -2)) {
+				return castle(piece, blackTeam, testingX*64, testingY*64);
 			}
 		}
 		else if(type.equalsIgnoreCase("knight")) {
