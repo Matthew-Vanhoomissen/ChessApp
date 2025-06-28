@@ -65,6 +65,14 @@ public class Piece {
 		this.y = y;
 	}
 	
+	
+	
+	public void setImage(String color, String type) {
+		ImageIcon imageI = new ImageIcon("C:\\Users\\mike_\\OneDrive\\Desktop\\ChessSet\\" + color + "-" + type + ".png");
+		this.image = imageI.getImage();
+		this.type = type;
+	}
+	
 	public void draw(Graphics g, JPanel p) {
 		if(image != null) {
 			g.drawImage(image, x, y, p);

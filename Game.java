@@ -164,7 +164,11 @@ public class Game extends JPanel{
                 		openSpace = false;
                 		
                 		
-                		
+                		if(p.getType().equals("pawn")) {
+                			if(p.getY()/64 == 0) {
+                				p.setImage("white", "queen");
+                			}
+                		}
                 		
                 		whiteCheck = inCheck("white");
                 		System.out.println("White is in check: " + whiteCheck);
@@ -290,7 +294,11 @@ public class Game extends JPanel{
                 		p.setSelected(false);
                 		openSpace = false;
                 		
-                		
+                		if(p.getType().equals("pawn")) {
+                			if(p.getY()/64 == 7) {
+                				p.setImage("black", "queen");
+                			}
+                		}
                 		
                 		whiteCheck = inCheck("white");
                 		blackCheck = inCheck("black");
@@ -494,7 +502,7 @@ public class Game extends JPanel{
 						for(int i = king.getX()/64 + 1; i < pi.getX()/64; i++) {
 							for(String s : tempSquares) {
 								
-								if(s.charAt(0) - '0' == i) {
+								if(s.charAt(0) - '0' == i && s.charAt(2) - '0' == king.getY()) {
 									return false;
 								}
 							}
@@ -518,6 +526,12 @@ public class Game extends JPanel{
 					
 					if((pi.getX() < king.getX())) {
 						for(int i = king.getX()/64 - 1; i > pi.getX()/64; i--) {
+							for(String s : tempSquares) {
+								
+								if(s.charAt(0) - '0' == i && s.charAt(2) - '0' == king.getY()) {
+									return false;
+								}
+							}
 							if(pieceThere(i*64, king.getY()) != null) {
 								return false;
 							}
