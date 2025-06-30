@@ -193,7 +193,7 @@ public class Game extends JPanel{
                 	}
                 }
                 }
-                endGame();
+                endGame(blackTeam, whiteTeam, "black", "white");
                 if(move % 2 == 1) {
                 for(Piece p : blackTeam) {
                 	if(p.getSelected()) {
@@ -327,7 +327,7 @@ public class Game extends JPanel{
                 	}
                 }
                 }
-                endGame();
+                endGame(whiteTeam, blackTeam, "white", "black");
                 
                 
                 
@@ -460,19 +460,28 @@ public class Game extends JPanel{
 		});
 	}
 	
-	public void endGame() {
+	public void endGame(ArrayList<Piece> team, ArrayList<Piece> oppositeTeam,String color, String oppositeColor) {
 		teamSquares();
 		ArrayList<String> whiteSquares2 = new ArrayList<>();
 		ArrayList<String> blackSquares2 = new ArrayList<>();
-		
-		for(String s : whiteSquares) {
-			Piece p;
+		ArrayList<String> squares;
+		if(color.equals("white")) {
+			squares = whiteSquares;
+		}
+		else {
+			squares = blackSquares;
+		}
+		for(String s : squares) {
+			Piece p = null;
 			int xt = s.charAt(0) - '0';
 			int yt = s.charAt(2) - '0';
-			for(Piece pe : whiteTeam) {
+			for(Piece pe : team) {
 				if(pe.getX()/64 == xt && pe.getY()/64 == yt) {
 					p = pe;
 				}
+			}
+			if(p == null) {
+				continue;
 			}
 			
 			boolean checking = false;
@@ -488,7 +497,7 @@ public class Game extends JPanel{
 				
 				
 				if(p.getType().equalsIgnoreCase("king")) {
-					for(Piece piece : whiteTeam) {
+					for(Piece piece : oppositeTeam) {
 						if(piece.getX() == xt*64 && piece.getY() == yt*64) {
 							checking = true;
 							tempo = piece.getType();
@@ -498,28 +507,31 @@ public class Game extends JPanel{
 						}
 					}
 				}
-				p.setX(a*64);
-				p.setY(b*64);
-				if(inCheck("black")) {
+				p.setX(xt*64);
+				p.setY(xt*64);
+				if(inCheck(color)) {
 					p.setX(tempX2);
 					p.setY(tempY2);
 					if(checking) {
-					whiteTeam.add(new Piece("white", tempo, a*64, b*64, false, bMoved));
+					oppositeTeam.add(new Piece(oppositeColor, tempo, xt*64, yt*64, false, bMoved));
 					}
 					continue;
 				}
 				p.setX(tempX2);
 				p.setY(tempY2);
 				if(checking) {
-				whiteTeam.add(new Piece("white", tempo, a*64, b*64, false, bMoved));
+				oppositeTeam.add(new Piece(oppositeColor, tempo, xt*64, yt*64, false, bMoved));
 				}
 				
-				
-				targetSquares.add(String.valueOf(a) + " " + String.valueOf(b));
-    			
+				if(color.equals("black")) {
+					blackSquares2.add(String.valueOf(xt) + " " + String.valueOf(yt));
+				}
+				else {
+					whiteSquares2.add(String.valueOf(xt) + " " + String.valueOf(yt));
+				}
         		repaint();
         		openSpace = false;
-        		counter2++;
+        		
     		}
 			
 			
@@ -532,17 +544,18 @@ public class Game extends JPanel{
 		
 		
 		
-		if(whiteSquares.size() == 0 && whiteCheck) {
+		if(whiteSquares2.size() == 0 && whiteCheck) {
 			System.out.println("Checkmate: white loses");
-			System.out.println("\nBlack wins");
+			System.out.println("Black wins");
 		}
-		else if(whiteSquares.size() == 0) {
+		else if(whiteSquares2.size() == 0) {
 			System.out.println("Stalemate");
 		}
 		
+		
 		if(blackSquares2.size() == 0 && blackCheck) {
 			System.out.println("Checkmate: black loses");
-			System.out.println("\nWhite wins");
+			System.out.println("White wins");
 		}
 		else if(blackSquares2.size() == 0) {
 			System.out.println("Stalemate");
