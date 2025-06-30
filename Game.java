@@ -92,7 +92,7 @@ public class Game extends JPanel{
             					
             					p.setX(tempX2);
         						p.setY(tempY2);
-                				System.out.println("capture");
+                				
                 				capture(bMouseX, bMouseY);
                 				repaint();
             					}
@@ -112,7 +112,7 @@ public class Game extends JPanel{
             					else {
             						p.setX(tempX2);
             						p.setY(tempY2);
-                				System.out.println("EnPassant");
+                				
                 				capture(Integer.parseInt(enPassant[1]), Integer.parseInt(enPassant[2]));
                 				enPassant2 = false;
             					}
@@ -193,6 +193,7 @@ public class Game extends JPanel{
                 	}
                 }
                 }
+                endGame();
                 if(move % 2 == 1) {
                 for(Piece p : blackTeam) {
                 	if(p.getSelected()) {
@@ -231,7 +232,7 @@ public class Game extends JPanel{
             					else {
             						p.setX(tempX2);
             						p.setY(tempY2);
-                				System.out.println("capture");
+                				
                 				capture(bMouseX, bMouseY);
                 				
                 				repaint();
@@ -251,7 +252,7 @@ public class Game extends JPanel{
             					else {
             						p.setX(tempX2);
             						p.setY(tempY2);
-                				System.out.println("EnPassant");
+                				
                 				capture(Integer.parseInt(enPassant[1]), Integer.parseInt(enPassant[2]));
                 				enPassant3 = false;
             					}
@@ -326,6 +327,7 @@ public class Game extends JPanel{
                 	}
                 }
                 }
+                endGame();
                 
                 
                 
@@ -340,9 +342,7 @@ public class Game extends JPanel{
                 		p.setSelected(true);
                 		for(int a = 0; a < 8; a++) {
                 			for(int b = 0; b < 8; b++) {
-                				if(a==1 && b==2) {
-            						System.out.println(p.getColor()); 
-            						}
+                				
                 				enPassW = true;
                 				testing = true;
                 				if(validMove(p, a*64, b*64)) {
@@ -379,12 +379,7 @@ public class Game extends JPanel{
                 		
                 	}
                 }
-                if(counter == 0 && !skip && inCheck("white")) {
-                	System.out.println("Checkmate");
-                }
-                else if(counter == 0 && !skip) {
-                	System.out.println("Stalemate");
-                }
+                
                 }
                 if(move % 2 == 1) {
                 	int counter2 = 0;
@@ -450,12 +445,7 @@ public class Game extends JPanel{
                 		
                 	}
                 }
-                if(counter2 == 0 && !skip && inCheck("black")) {
-                	System.out.println("Checkmate");
-                }
-                else if(counter2 == 0 && !skip) {
-                	System.out.println("Stalemate");
-                }
+                
                 }
                 
                 
@@ -468,6 +458,95 @@ public class Game extends JPanel{
 			}
 			
 		});
+	}
+	
+	public void endGame() {
+		teamSquares();
+		ArrayList<String> whiteSquares2 = new ArrayList<>();
+		ArrayList<String> blackSquares2 = new ArrayList<>();
+		
+		for(String s : whiteSquares) {
+			Piece p;
+			int xt = s.charAt(0) - '0';
+			int yt = s.charAt(2) - '0';
+			for(Piece pe : whiteTeam) {
+				if(pe.getX()/64 == xt && pe.getY()/64 == yt) {
+					p = pe;
+				}
+			}
+			
+			boolean checking = false;
+			String tempo = "";
+			boolean bMoved = false;
+			enPassB = true;
+			testing = true;
+			if(validMove(p, xt*64, yt*64)) {
+				enPassB = false;
+				int tempX2 = p.getX();
+				int tempY2 = p.getY();
+				
+				
+				
+				if(p.getType().equalsIgnoreCase("king")) {
+					for(Piece piece : whiteTeam) {
+						if(piece.getX() == xt*64 && piece.getY() == yt*64) {
+							checking = true;
+							tempo = piece.getType();
+							bMoved = piece.getMoved();
+							capture(xt, yt);
+							break;
+						}
+					}
+				}
+				p.setX(a*64);
+				p.setY(b*64);
+				if(inCheck("black")) {
+					p.setX(tempX2);
+					p.setY(tempY2);
+					if(checking) {
+					whiteTeam.add(new Piece("white", tempo, a*64, b*64, false, bMoved));
+					}
+					continue;
+				}
+				p.setX(tempX2);
+				p.setY(tempY2);
+				if(checking) {
+				whiteTeam.add(new Piece("white", tempo, a*64, b*64, false, bMoved));
+				}
+				
+				
+				targetSquares.add(String.valueOf(a) + " " + String.valueOf(b));
+    			
+        		repaint();
+        		openSpace = false;
+        		counter2++;
+    		}
+			
+			
+		}
+		
+				
+				
+			
+		
+		
+		
+		
+		if(whiteSquares.size() == 0 && whiteCheck) {
+			System.out.println("Checkmate: white loses");
+			System.out.println("\nBlack wins");
+		}
+		else if(whiteSquares.size() == 0) {
+			System.out.println("Stalemate");
+		}
+		
+		if(blackSquares2.size() == 0 && blackCheck) {
+			System.out.println("Checkmate: black loses");
+			System.out.println("\nWhite wins");
+		}
+		else if(blackSquares2.size() == 0) {
+			System.out.println("Stalemate");
+		}
 	}
 	
 	public boolean castle(Piece king, ArrayList<Piece> team, int x, int y) {
@@ -560,6 +639,7 @@ public class Game extends JPanel{
 					for(int b = 0; b < 8; b++) {
 						testing = true;
 						if(validMove(p, a*64, b*64)) {
+							
 							whiteSquares.add(String.valueOf(a) + " " + String.valueOf(b));
 						}
 					}
@@ -766,7 +846,7 @@ public class Game extends JPanel{
 					if(pieceThere(testingX, testingY - 1) != null) {
 						return false;
 					}
-					System.out.println(gridY);
+					
 					if(enPassB) {
 					enPassant[0] = color2;
 					enPassant[1] = "" + testingX;
@@ -780,9 +860,7 @@ public class Game extends JPanel{
 			if(testingX - gridX <= 1 && testingX - gridX >= -1 && testingY - gridY >= -1 && testingY - gridY <= 1 && (testingX != gridX || gridY != testingY)) {
 				return true;
 			}
-			if(testingY == gridY && testingX == 1) {
-				System.out.println("now");
-			}
+			
 			if(color2.equals("white") && testingY == gridY && (testingX - gridX == 2 || testingX - gridX == -2)) {
 				return castle(piece, whiteTeam, testingX*64, testingY*64);
 			}
