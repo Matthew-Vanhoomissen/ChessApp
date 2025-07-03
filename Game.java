@@ -29,7 +29,8 @@ public class Game extends JPanel{
 	boolean enPassW = true;
 	boolean enPassB = true;
 	boolean testing = true;
-	
+	ArrayList<Piece> whitePieces = new ArrayList<>();
+	ArrayList<Piece> blackPieces = new ArrayList<>();
 	
 	
 	
@@ -182,6 +183,7 @@ public class Game extends JPanel{
                 		
                 		repaint();
                 		move++;
+                		endGame(blackTeam, whiteTeam, "black", "white");
                 		break;
                 		//p.setX((int)(Math.floor(mouseX/64) * 64));
                 		//p.setY((int)(Math.floor(mouseY/64) * 64));
@@ -192,8 +194,9 @@ public class Game extends JPanel{
                 		
                 	}
                 }
+                
                 }
-                endGame(blackTeam, whiteTeam, "black", "white");
+               
                 if(move % 2 == 1) {
                 for(Piece p : blackTeam) {
                 	if(p.getSelected()) {
@@ -314,6 +317,7 @@ public class Game extends JPanel{
                 		
                 		repaint();
                 		move++;
+                		endGame(whiteTeam, blackTeam, "white", "black");
                 		break;
                 		
                 		/*
@@ -326,8 +330,9 @@ public class Game extends JPanel{
                 		*/
                 	}
                 }
+               
                 }
-                endGame(whiteTeam, blackTeam, "white", "black");
+                
                 
                 
                 
@@ -461,104 +466,28 @@ public class Game extends JPanel{
 	}
 	
 	public void endGame(ArrayList<Piece> team, ArrayList<Piece> oppositeTeam,String color, String oppositeColor) {
-		teamSquares();
-		ArrayList<String> whiteSquares2 = new ArrayList<>();
-		ArrayList<String> blackSquares2 = new ArrayList<>();
-		ArrayList<String> squares;
+		ArrayList<String> sq = updatedSquares(color);
 		if(color.equals("white")) {
-			squares = whiteSquares;
-		}
-		else {
-			squares = blackSquares;
-		}
-		for(String s : squares) {
-			Piece p = null;
-			int xt = s.charAt(0) - '0';
-			int yt = s.charAt(2) - '0';
-			for(Piece pe : team) {
-				if(pe.getX()/64 == xt && pe.getY()/64 == yt) {
-					p = pe;
-				}
-			}
-			if(p == null) {
-				continue;
-			}
-			
-			boolean checking = false;
-			String tempo = "";
-			boolean bMoved = false;
-			enPassB = true;
-			testing = true;
-			if(validMove(p, xt*64, yt*64)) {
-				enPassB = false;
-				int tempX2 = p.getX();
-				int tempY2 = p.getY();
-				
-				
-				
-				if(p.getType().equalsIgnoreCase("king")) {
-					for(Piece piece : oppositeTeam) {
-						if(piece.getX() == xt*64 && piece.getY() == yt*64) {
-							checking = true;
-							tempo = piece.getType();
-							bMoved = piece.getMoved();
-							capture(xt, yt);
-							break;
-						}
-					}
-				}
-				p.setX(xt*64);
-				p.setY(xt*64);
-				if(inCheck(color)) {
-					p.setX(tempX2);
-					p.setY(tempY2);
-					if(checking) {
-					oppositeTeam.add(new Piece(oppositeColor, tempo, xt*64, yt*64, false, bMoved));
-					}
-					continue;
-				}
-				p.setX(tempX2);
-				p.setY(tempY2);
-				if(checking) {
-				oppositeTeam.add(new Piece(oppositeColor, tempo, xt*64, yt*64, false, bMoved));
-				}
-				
-				if(color.equals("black")) {
-					blackSquares2.add(String.valueOf(xt) + " " + String.valueOf(yt));
-				}
-				else {
-					whiteSquares2.add(String.valueOf(xt) + " " + String.valueOf(yt));
-				}
-        		repaint();
-        		openSpace = false;
-        		
-    		}
-			
-			
-		}
-		
-				
-				
-			
-		
-		
-		
-		
-		if(whiteSquares2.size() == 0 && whiteCheck) {
+		if(sq.size() == 0 && whiteCheck) {
 			System.out.println("Checkmate: white loses");
 			System.out.println("Black wins");
 		}
-		else if(whiteSquares2.size() == 0) {
+		else if(sq.size() == 0) {
 			System.out.println("Stalemate");
 		}
 		
 		
-		if(blackSquares2.size() == 0 && blackCheck) {
+		}
+		else {
+		if(sq.size() == 0 && blackCheck) {
 			System.out.println("Checkmate: black loses");
 			System.out.println("White wins");
 		}
-		else if(blackSquares2.size() == 0) {
+		else if(sq.size() == 0) {
 			System.out.println("Stalemate");
+		}
+		
+		
 		}
 	}
 	
@@ -644,7 +573,7 @@ public class Game extends JPanel{
 	public void teamSquares() {
 		
 			
-			
+			whitePieces.clear();
 			whiteSquares.clear();
 			for(Piece p : whiteTeam) {
 				
@@ -654,6 +583,7 @@ public class Game extends JPanel{
 						if(validMove(p, a*64, b*64)) {
 							
 							whiteSquares.add(String.valueOf(a) + " " + String.valueOf(b));
+							whitePieces.add(p);
 						}
 					}
 				}
@@ -661,7 +591,7 @@ public class Game extends JPanel{
 			
 		
 		
-		
+			blackPieces.clear();
 			blackSquares.clear();
 			for(Piece p : blackTeam) {
 				
@@ -670,6 +600,7 @@ public class Game extends JPanel{
 						testing = true;
 						if(validMove(p, a*64, b*64)) {
 							blackSquares.add(String.valueOf(a) + " " + String.valueOf(b));
+							blackPieces.add(p);
 						}
 					}
 				}
@@ -678,6 +609,132 @@ public class Game extends JPanel{
 			
 		
 	}
+	public ArrayList<String> updatedSquares(String color) {
+		ArrayList<String> finalArray = new ArrayList<>();
+		if(color.equals("black")) {
+			ArrayList<Piece> tempy = blackTeam;
+			for(Piece p : tempy) {
+				
+				for(int a = 0; a < 8; a++) {
+					
+					for(int b = 0; b < 8; b++) {
+						boolean checking = false;
+	    				String tempo = "";
+	    				boolean bMoved = false;
+	    				enPassB = true;
+	    				testing = true;
+						testing = true;
+						if(validMove(p, a*64, b*64)) {
+							enPassB = false;
+        					int tempX2 = p.getX();
+        					int tempY2 = p.getY();
+        					
+        					
+        					
+        					if(p.getType().equalsIgnoreCase("king")) {
+        						for(Piece piece : whiteTeam) {
+        							if(piece.getX() == a*64 && piece.getY() == b*64) {
+        								checking = true;
+        								tempo = piece.getType();
+        								bMoved = piece.getMoved();
+        								whiteTeam.remove(piece);
+        								break;
+        							}
+        						}
+        					}
+        					p.setX(a*64);
+        					p.setY(b*64);
+        					if(inCheck("black")) {
+        						p.setX(tempX2);
+        						p.setY(tempY2);
+        						if(checking) {
+        						whiteTeam.add(new Piece("white", tempo, a*64, b*64, false, bMoved));
+        						}
+        						continue;
+        					}
+        					p.setX(tempX2);
+    						p.setY(tempY2);
+    						if(checking) {
+    						whiteTeam.add(new Piece("white", tempo, a*64, b*64, false, bMoved));
+    						}
+        					
+    						
+    						finalArray.add(String.valueOf(a) + " " + String.valueOf(b));
+                			
+                    		repaint();
+                    		openSpace = false;
+                    		
+                		}
+						}
+					}
+				}
+			
+			}
+		else {
+			ArrayList<Piece> tempy = whiteTeam;
+			for(Piece p : tempy) {
+				
+				for(int a = 0; a < 8; a++) {
+					
+					for(int b = 0; b < 8; b++) {
+						boolean checking = false;
+	    				String tempo = "";
+	    				boolean bMoved = false;
+	    				enPassB = true;
+	    				testing = true;
+						testing = true;
+						if(validMove(p, a*64, b*64)) {
+							enPassB = false;
+        					int tempX2 = p.getX();
+        					int tempY2 = p.getY();
+        					
+        					
+        					
+        					if(p.getType().equalsIgnoreCase("king")) {
+        						for(Piece piece : blackTeam) {
+        							if(piece.getX() == a*64 && piece.getY() == b*64) {
+        								checking = true;
+        								tempo = piece.getType();
+        								bMoved = piece.getMoved();
+        								blackTeam.remove(piece);
+        								break;
+        							}
+        						}
+        					}
+        					p.setX(a*64);
+        					p.setY(b*64);
+        					if(inCheck("white")) {
+        						p.setX(tempX2);
+        						p.setY(tempY2);
+        						if(checking) {
+        						blackTeam.add(new Piece("black", tempo, a*64, b*64, false, bMoved));
+        						}
+        						continue;
+        					}
+        					p.setX(tempX2);
+    						p.setY(tempY2);
+    						if(checking) {
+    						blackTeam.add(new Piece("black", tempo, a*64, b*64, false, bMoved));
+    						}
+        					
+    						
+    						finalArray.add(String.valueOf(a) + " " + String.valueOf(b));
+                			
+                    		repaint();
+                    		openSpace = false;
+                    		
+                		}
+						}
+					}
+				}	
+			}
+		return finalArray;
+		}
+		
+		
+		
+	
+	
 	public boolean inCheck(String color) {
 		
 		
