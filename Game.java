@@ -111,11 +111,15 @@ public class Game extends JPanel{
             						
             					}
             					else {
-            						p.setX(tempX2);
-            						p.setY(tempY2);
+            						p.setX((int)(Math.floor(mouseX/64)*64));
+                					p.setY((int)(Math.floor(mouseY/64) * 64));
                 				
                 				capture(Integer.parseInt(enPassant[1]), Integer.parseInt(enPassant[2]));
                 				enPassant2 = false;
+                				repaint();
+                        		targetSquares.clear();
+                        		continue;
+                				
             					}
                 			}
                 			
@@ -253,8 +257,8 @@ public class Game extends JPanel{
             						
             					}
             					else {
-            						p.setX(tempX2);
-            						p.setY(tempY2);
+            						p.setX((int)(Math.floor(mouseX/64)*64));
+                					p.setY((int)(Math.floor(mouseY/64) * 64));
                 				
                 				capture(Integer.parseInt(enPassant[1]), Integer.parseInt(enPassant[2]));
                 				enPassant3 = false;
@@ -853,9 +857,11 @@ public class Game extends JPanel{
 		
 		if(type.equalsIgnoreCase("pawn")) {
 			if(color2.equalsIgnoreCase("white")) {
+				
 			if(enPassant[0] != null && enPassant[0] != color2) {
 				int tempX = Integer.parseInt(enPassant[1]);
 				int tempY = Integer.parseInt(enPassant[2]);
+				System.out.println(tempX + "." + tempY);
 				if(tempX == testingX && tempY == testingY + 1 && (tempX + 1 == gridX || tempX - 1 == gridX) && tempY == gridY) {
 					enPassant2 = true;
 					return true;
@@ -887,10 +893,12 @@ public class Game extends JPanel{
 					return false;
 				}
 				//System.out.println("Move up by 2");
+				
 				if(enPassW) {
 				enPassant[0] = color2;
 				enPassant[1] = "" + testingX;
 				enPassant[2] = "" + testingY;
+				
 				return true;
 				}
 			}
@@ -899,6 +907,7 @@ public class Game extends JPanel{
 				if(enPassant[0] != null && enPassant[0] != color2) {
 					int tempX = Integer.parseInt(enPassant[1]);
 					int tempY = Integer.parseInt(enPassant[2]);
+					System.out.println(tempX + "." + tempY);
 					if(tempX == testingX && tempY + 1 == testingY && (tempX + 1 == gridX || tempX - 1 == gridX) && tempY == gridY) {
 						enPassant3 = true;
 						return true;
