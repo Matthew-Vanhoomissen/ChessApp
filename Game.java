@@ -516,6 +516,13 @@ public class Game extends JPanel{
 		
 			
 			if(x - king.getX() > 0) {
+				if(king.getColor().equals("white")) {
+					
+					if(pieceThere(5, 7) != null) {
+						return false;
+					}
+				}
+				
 				
 				for(Piece pi : tempTeam) {
 					
@@ -527,13 +534,13 @@ public class Game extends JPanel{
 									return false;
 								}
 							}
-							if(pieceThere(i*64, king.getY()) != null) {
+							if(pieceThere(i, king.getY()) != null) {
 								return false;
 							}
 						}
 						if(pi.getMoved() == false && king.getMoved() == false) {
 							if(!testing) {
-							pi.setX(4*64);
+							pi.setX(5*64);
 							repaint();
 							}
 						return true;
@@ -542,7 +549,12 @@ public class Game extends JPanel{
 				}
 			}
 			if(x - king.getX() < 0) {
-				
+				if(king.getColor().equals("white")) {
+					
+					if(pieceThere(3, 7) != null) {
+						return false;
+					}
+				}
 				for(Piece pi : tempTeam) {
 					
 					if((pi.getX() < king.getX())) {
@@ -553,13 +565,13 @@ public class Game extends JPanel{
 									return false;
 								}
 							}
-							if(pieceThere(i*64, king.getY()) != null) {
+							if(pieceThere(i, king.getY()) != null) {
 								return false;
 							}
 						}
 						if(pi.getMoved() == false && king.getMoved() == false) {
 							if(!testing) {
-							pi.setX(2*64);
+							pi.setX(3*64);
 							repaint();
 							}
 						return true;
@@ -1269,7 +1281,7 @@ public class Game extends JPanel{
 				else if(j == 2 || j == 5) {
 					piece = "bishop";
 				}
-				else if(j == 4) {
+				else if(j == 3) {
 					piece = "queen";
 				}
 				else {
@@ -1300,7 +1312,7 @@ public class Game extends JPanel{
 				else if(j == 2 || j == 5) {
 					piece = "bishop";
 				}
-				else if(j == 4) {
+				else if(j == 3) {
 					piece = "queen";
 				}
 				else {
@@ -1319,7 +1331,7 @@ public class Game extends JPanel{
 		super.paintComponent(g);
 		boolean painted = true;
 		
-		boolean white = false;
+		boolean white = true;
 		for(int i = 0; i < 8; i++) {
 			for(int j = 0; j < 8; j++) {
 				if(white) {
@@ -1347,7 +1359,7 @@ public class Game extends JPanel{
 			
 		}
 		if(painted) {
-			white = false;
+			white = true;
 			for(int i = 0; i < 8; i++) {
 				for(int j = 0; j < 8; j++) {
 					if(white) {
