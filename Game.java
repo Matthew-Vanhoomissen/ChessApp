@@ -18,16 +18,13 @@ public class Game extends JPanel{
 	ArrayList<String> targetSquares = new ArrayList<>();
 	ArrayList<String> whiteSquares = new ArrayList<>();
 	ArrayList<String> blackSquares = new ArrayList<>();
-	String[] enPassant = new String[3];
-	boolean enPassant2 = false;
-	boolean enPassant3 = false;
+	
 	int move = 0;
 	boolean skip = false;
 	boolean openSpace = true;
 	boolean whiteCheck = false;
 	boolean blackCheck = false;
-	boolean enPassW = true;
-	boolean enPassB = true;
+	
 	boolean testing = true;
 	ArrayList<Piece> whitePieces = new ArrayList<>();
 	ArrayList<Piece> blackPieces = new ArrayList<>();
@@ -58,10 +55,10 @@ public class Game extends JPanel{
                 	
                 	if(p.getSelected()) {
                 	
-                		enPassW = true;
+                		
                 		testing = false;
                 		if(validMove(p, (int)(Math.floor(mouseX/64) * 64), (int)(Math.floor(mouseY/64) * 64))) {
-                			enPassW = false;
+                			
                 			if(pieceThere(bMouseX, bMouseY) != null && !(pieceThere(bMouseX, bMouseY).equalsIgnoreCase(p.getColor()))) {
                 				int tempX2 = p.getX();
             					int tempY2 = p.getY();
@@ -99,29 +96,7 @@ public class Game extends JPanel{
             					}
                 			}
                 			
-                			if(enPassant2) {
-                				int tempX2 = p.getX();
-            					int tempY2 = p.getY();
-            					p.setX((int)(Math.floor(mouseX/64)*64));
-            					p.setY((int)(Math.floor(mouseY/64) * 64));
-            					if(inCheck("white")) {
-            						p.setX(tempX2);
-            						p.setY(tempY2);
-            						
-            						
-            					}
-            					else {
-            						p.setX((int)(Math.floor(mouseX/64)*64));
-                					p.setY((int)(Math.floor(mouseY/64) * 64));
-                				
-                				capture(Integer.parseInt(enPassant[1]), Integer.parseInt(enPassant[2]));
-                				enPassant2 = false;
-                				repaint();
-                        		targetSquares.clear();
-                        		continue;
-                				
-            					}
-                			}
+                			
                 			
                 			int tempX2 = p.getX();
         					int tempY2 = p.getY();
@@ -160,9 +135,7 @@ public class Game extends JPanel{
                 			repaint();
                 			continue;
                 		}
-                		if(enPassant[0] != null && !enPassant[0].equalsIgnoreCase(p.getColor())) {
-                			enPassant[0] = null;
-                		}
+                		
                 		
                 		targetSquares.clear();
                 		p.setSelected(false);
@@ -204,10 +177,10 @@ public class Game extends JPanel{
                 if(move % 2 == 1) {
                 for(Piece p : blackTeam) {
                 	if(p.getSelected()) {
-                		enPassB = true;
+                		
                 		testing = false;
                 		if(validMove(p, (int)(Math.floor(mouseX/64) * 64), (int)(Math.floor(mouseY/64) * 64))) {
-                			enPassB = false;
+                			
                 			if(pieceThere(bMouseX, bMouseY) != null && !(pieceThere(bMouseX, bMouseY).equalsIgnoreCase(p.getColor()))) {
                 				int tempX2 = p.getX();
             					int tempY2 = p.getY();
@@ -245,25 +218,7 @@ public class Game extends JPanel{
                 				repaint();
             					}
                 			}
-                			else if(enPassant3) {
-                				int tempX2 = p.getX();
-            					int tempY2 = p.getY();
-            					p.setX((int)(Math.floor(mouseX/64)*64));
-            					p.setY((int)(Math.floor(mouseY/64) * 64));
-            					if(inCheck("black")) {
-            						p.setX(tempX2);
-            						p.setY(tempY2);
-            						
-            						
-            					}
-            					else {
-            						p.setX((int)(Math.floor(mouseX/64)*64));
-                					p.setY((int)(Math.floor(mouseY/64) * 64));
-                				
-                				capture(Integer.parseInt(enPassant[1]), Integer.parseInt(enPassant[2]));
-                				enPassant3 = false;
-            					}
-                			}
+                			
                 			
                 			int tempX2 = p.getX();
         					int tempY2 = p.getY();
@@ -295,9 +250,7 @@ public class Game extends JPanel{
                 			repaint();
                 			continue;
                 		}
-                		if(enPassant[0] != null && !enPassant[0].equalsIgnoreCase(p.getColor())) {
-                			enPassant[0] = null;
-                		}
+                		
                 		targetSquares.clear();
                 		p.setSelected(false);
                 		openSpace = false;
@@ -352,10 +305,10 @@ public class Game extends JPanel{
                 		for(int a = 0; a < 8; a++) {
                 			for(int b = 0; b < 8; b++) {
                 				
-                				enPassW = true;
+                				
                 				testing = true;
                 				if(validMove(p, a*64, b*64)) {
-                					enPassW = false;
+                					
                 					int tempX2 = p.getX();
                 					int tempY2 = p.getY();
                 					p.setX(a*64);
@@ -402,10 +355,10 @@ public class Game extends JPanel{
                 				boolean checking = false;
                 				String tempo = "";
                 				boolean bMoved = false;
-                				enPassB = true;
+                				
                 				testing = true;
                 				if(validMove(p, a*64, b*64)) {
-                					enPassB = false;
+                					
                 					int tempX2 = p.getX();
                 					int tempY2 = p.getY();
                 					
@@ -637,11 +590,11 @@ public class Game extends JPanel{
 						boolean checking = false;
 	    				String tempo = "";
 	    				boolean bMoved = false;
-	    				enPassB = true;
+	    				
 	    				testing = true;
 						testing = true;
 						if(validMove(p, a*64, b*64)) {
-							enPassB = false;
+							
         					int tempX2 = p.getX();
         					int tempY2 = p.getY();
         					
@@ -696,11 +649,11 @@ public class Game extends JPanel{
 						boolean checking = false;
 	    				String tempo = "";
 	    				boolean bMoved = false;
-	    				enPassB = true;
+	    				
 	    				testing = true;
 						testing = true;
 						if(validMove(p, a*64, b*64)) {
-							enPassB = false;
+							
         					int tempX2 = p.getX();
         					int tempY2 = p.getY();
         					
@@ -858,16 +811,7 @@ public class Game extends JPanel{
 		if(type.equalsIgnoreCase("pawn")) {
 			if(color2.equalsIgnoreCase("white")) {
 				
-			if(enPassant[0] != null && enPassant[0] != color2) {
-				int tempX = Integer.parseInt(enPassant[1]);
-				int tempY = Integer.parseInt(enPassant[2]);
-				System.out.println(tempX + "." + tempY);
-				if(tempX == testingX && tempY == testingY + 1 && (tempX + 1 == gridX || tempX - 1 == gridX) && tempY == gridY) {
-					enPassant2 = true;
-					return true;
-				}
-				
-			}
+			
 			
 			
 			if(testingX == gridX && (gridY - 1) == testingY) {
@@ -894,25 +838,11 @@ public class Game extends JPanel{
 				}
 				//System.out.println("Move up by 2");
 				
-				if(enPassW) {
-				enPassant[0] = color2;
-				enPassant[1] = "" + testingX;
-				enPassant[2] = "" + testingY;
-				
 				return true;
-				}
 			}
 		}
 			else if (color2.equalsIgnoreCase("black")) {
-				if(enPassant[0] != null && enPassant[0] != color2) {
-					int tempX = Integer.parseInt(enPassant[1]);
-					int tempY = Integer.parseInt(enPassant[2]);
-					System.out.println(tempX + "." + tempY);
-					if(tempX == testingX && tempY + 1 == testingY && (tempX + 1 == gridX || tempX - 1 == gridX) && tempY == gridY) {
-						enPassant3 = true;
-						return true;
-					}
-				}
+				
 				
 				
 				if(testingX == gridX && (gridY + 1) == testingY) {
@@ -938,12 +868,7 @@ public class Game extends JPanel{
 						return false;
 					}
 					
-					if(enPassB) {
-					enPassant[0] = color2;
-					enPassant[1] = "" + testingX;
-					enPassant[2] = "" + testingY;
 					return true;
-					}
 				}
 			}
 		}
